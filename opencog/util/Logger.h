@@ -51,6 +51,8 @@ public:
     // WARNING: if you change the levels don't forget to update
     // levelStrings[] in Logger.cc
     enum Level { NONE, ERROR, WARN, INFO, DEBUG, FINE, BAD_LEVEL=255 };
+    static bool printToStdout;
+    
 
     /**
      * Convert from string to enum (ignoring case), and vice-versa.
@@ -348,7 +350,7 @@ private:
         void write_msg(const std::string&);
 
     public:
-        bool printToStdout;
+        //bool printToStdout;
 
         LogWriter(void);
         ~LogWriter();

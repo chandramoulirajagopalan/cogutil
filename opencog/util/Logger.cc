@@ -150,7 +150,6 @@ Logger::~Logger()
 std::map<std::string, Logger::LogWriter*> Logger::_loggers;
 
 Logger::LogWriter::LogWriter(void)
-	: printToStdout(false)
 {
     writingLoopActive = false;
 #ifdef HAVE_VALGRIND
@@ -264,7 +263,7 @@ void Logger::LogWriter::write_msg(const std::string &msg)
     lock.unlock();
 
     // Write to stdout.
-    if (printToStdout)
+    if (Logger::printToStdout)
     {
         std::cout << msg;
         std::cout.flush();
@@ -395,12 +394,13 @@ void Logger::set_thread_id_flag(bool flag)
 
 void Logger::set_print_to_stdout_flag(bool flag)
 {
-    if (_log_writer) _log_writer->printToStdout = flag;
+    printToStdout = flag;
 }
 
 bool Logger::get_print_to_stdout_flag() const
 {
-    return _log_writer and _log_writer->printToStdout;
+    std::cout << "\n" << _log_writer;
+    return _log_writer and printToStdout;
 }
 
 void Logger::set_print_level_flag(bool flag)
@@ -571,6 +571,10 @@ Logger::Level Logger::get_level_from_string(const std::string& levelStr)
 // Create and return the single instance
 Logger& opencog::logger()
 {
-    static Logger instance;
+    auto _logger = [](){
+        Logger* tmp = new Logger();
+		return *tmp;
+	};
+    static Logger instance(_logger());
     return instance;
 }
